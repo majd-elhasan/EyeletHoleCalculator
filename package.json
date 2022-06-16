@@ -18,10 +18,13 @@
     "react-native": "0.68.2",
     "react-native-canvas": "^0.1.38",
     "react-native-motion": "^1.0.5",
+    "react-native-svg": "^12.3.0",
+    "react-native-svg-transformer": "^1.0.0",
     "react-native-transition": "^1.1.8",
     "react-native-web": "0.17.7",
-    "react-native-webview": "^11.22.2",
-    "webpack-dev-server": "~3.11.0"
+    "react-native-webview": "11.18.1",
+    "webpack-dev-server": "~3.11.0",
+    "expo-updates": "~0.13.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"

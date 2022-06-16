@@ -1,11 +1,15 @@
 
 import { useState } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity ,Dimensions} from 'react-native';
 import DPButton from './components/DPButton';
-// import Canvas from 'react-native-canvas';
-// import React, { Component } from 'react';
+import Svg, { Circle, Rect,Line ,Polyline,Text as SVGText} from 'react-native-svg';
+
 
 const cellHeight = 40;
+const chartWidth = Dimensions.get('window').width/2;
+const chartHeight= Dimensions.get('window').height/2;
+const leftStart = chartWidth*3/4-19;
+const rightStart = chartWidth*3/4+19;
 
 // var switch_state=false;
 
@@ -29,15 +33,12 @@ export default function App() {
   const [eyeletNum_Value, SetEyeletNum_Value] = useState(0);
   const [minimumDis_or_EyeletNum_input_state, setMinimumDis_or_EyeletNum_input_state] = useState(false);
   const [minimumDistance_Value, SetMinimumDistance_Value] = useState(0);
-  const [activeColor, SetActiveColor] = useState("tomato");
+  const activeColor = "tomato"
 
-  // const handleCanvas = (Canvas) => {
-  //   const ctx = Canvas.getContext('2d');
-  //   ctx.fillStyle = 'purple';
-  //   ctx.fillRect(0, 0, 100, 100);
-  // }
+  const [start_input_state, setStart_input_state] = useState(false);
 
   function calculate() {
+    // var start = parseFloat(Start);
     var width = parseFloat(widthValue);
     var eyeletNum = parseFloat(eyeletNum_Value);
     var minimum = parseFloat(minimumDistance_Value);
@@ -66,14 +67,24 @@ export default function App() {
     }
     else calculated_input = inputValue;
   }
+  function activate_StartField() {
+    setMinimumDis_or_EyeletNum_input_state(false);
+    setWidth_input_state(false);
+    setStart_input_state(!start_input_state);
+
+    Input_Calculator();
+    if (start_input_state) { SetStart(parseFloat(calculated_input)); SetInputValue("") }; // width_input_state will be set to false after this function finish !! :)
+  }
   function activate_WidthField() {
-    setMinimumDis_or_EyeletNum_input_state(false)
+    setStart_input_state(false);
+    setMinimumDis_or_EyeletNum_input_state(false);
     setWidth_input_state(!width_input_state);
 
     Input_Calculator();
     if (width_input_state) { SetWidthValue(calculated_input); SetInputValue("") }; // width_input_state will be set to false after this function finish !! :)
   }
   function activate_numberOrDistance() {
+    setStart_input_state(false);
     setWidth_input_state(false);
     setMinimumDis_or_EyeletNum_input_state(!minimumDis_or_EyeletNum_input_state);
     Input_Calculator();
@@ -84,27 +95,33 @@ export default function App() {
   }
   return (
     <View style={styles.container}>
-      <View style={[styles.colDir,{  top: 10 }]}>
+      <View style={{  top: 10 ,flexDirection:"row"}}>
         <View style={{ flex: 1, padding: 10 }}>
           <Image style={[styles.settingIcon]} source={require('./assets/setting-icon.png')} />
         </View>
-        <View style={[styles.rowDir,{ flex: 3}]}>
+        <View style={{ flex: 3,flexDirection:"column"}}>
           <View style={styles.Width_eyeletNum}>
             <Text onPress={() => activate_WidthField()}>Width</Text>
           </View>
           <View style={[styles.Width_eyeletNum, { top: cellHeight / 2 }]}>
             <Text onPress={() => activate_numberOrDistance()} style={{fontSize:!switch_state?12:14}}>{switch_state ? `Eyelet Number` : `Minimum Distance`}</Text>
           </View>
+          {/* Starting Distance */}
+          <View style={[styles.Width_eyeletNum,{ top: cellHeight}]}>
+            <Text onPress={() => activate_StartField()} style={{fontSize:13}}>Starting Distance</Text>
+          </View>
         </View>
-        <View style={[styles.rowDir,{ flex: 2}]}>
+        <View style={{ flex: 2,flexDirection:"column"}}>
           <View style={[styles.Width_eyeletNum_values, { backgroundColor: width_input_state ? activeColor : "rgb(136, 180, 77)" }]}><Text>{width_input_state ? inputValue : widthValue}</Text></View>
           <View style={[styles.Width_eyeletNum_values, { top: cellHeight / 2, backgroundColor: (minimumDis_or_EyeletNum_input_state) ? activeColor : "rgb(136, 180, 77)" }]}><Text>{(minimumDis_or_EyeletNum_input_state) ? inputValue : switch_state ? eyeletNum_Value : minimumDistance_Value}</Text></View>
+          {/* Starting Distance */}
+          <View style={[styles.Width_eyeletNum_values, { top:cellHeight,backgroundColor: start_input_state ? activeColor : "rgb(136, 180, 77)"}]}><Text>{start_input_state ? inputValue : Start}</Text></View>
         </View>
-        <View style={[styles.rowDir,{ flex: 2}]}>
+        <View style={{ flex: 2,flexDirection:"column"}}>
           <View style={styles.cell_setting}></View>
           <View style={[styles.cell_setting, { top: cellHeight / 2, left: 20 }]}><Text>Number</Text></View>
         </View>
-        <View style={[styles.rowDir,{ flex: 3}]}>
+        <View style={{ flex: 3,flexDirection:"column"}}>
           <View style={styles.calculate_switch}>
             <Text onPress={() => { calculate() }}>Calculate</Text>
           </View>
@@ -114,28 +131,28 @@ export default function App() {
             </TouchableOpacity>
           </View>
         </View>
-        <View style={[styles.rowDir,{ flex: 2}]}>
+        <View style={{ flex: 2,flexDirection:"column"}}>
           <View style={styles.cell_setting}></View>
           <View style={[styles.cell_setting, { top: cellHeight / 3 ,left:10}]}><Text style={{fontSize : 12}} >Minimum distance</Text></View>
         </View>
-        <View style={[styles.rowDir,{ flex: 6}]}>
+        <View style={{ flex: 6,flexDirection:"column"}}>
             {/* here I am going to write a function to render all number views programmatically */}
-          <View style={[styles.colDir,{ marginBottom: 10 }]}>
+          <View style={{ marginBottom: 10 ,flexDirection:"row"}}>
             <DPButton num="1" onClick={SetInputValue} inputValue={inputValue}/>
             <DPButton num="2" onClick={SetInputValue} inputValue={inputValue}/>
             <DPButton num="3" onClick={SetInputValue} inputValue={inputValue}/>
           </View>
-          <View style={[styles.colDir,{ marginBottom: 10 }]}>
+          <View style={{ marginBottom: 10 ,flexDirection:"row"}}>
             <DPButton num="4" onClick={SetInputValue} inputValue={inputValue}/>
             <DPButton num="5" onClick={SetInputValue} inputValue={inputValue}/>
             <DPButton num="6" onClick={SetInputValue} inputValue={inputValue}/>
           </View>
-          <View style={[styles.colDir,{ marginBottom: 10 }]}>
+          <View style={{ marginBottom: 10 ,flexDirection:"row"}}>
             <DPButton num="7" onClick={SetInputValue} inputValue={inputValue}/>
             <DPButton num="8" onClick={SetInputValue} inputValue={inputValue}/>
             <DPButton num="9" onClick={SetInputValue} inputValue={inputValue}/>
           </View>
-          <View style={[styles.colDir,{ marginBottom: 10 }]}>
+          <View style={{ marginBottom: 10 ,flexDirection:"row"}}>
             <DPButton num="*" onClick={SetInputValue} inputValue={inputValue}/>
             <DPButton num="0" onClick={SetInputValue} inputValue={inputValue}/>
             <DPButton num="←" onClick={SetInputValue} inputValue={inputValue} deleteFunc={() => {
@@ -148,10 +165,122 @@ export default function App() {
           </View>
         </View>
       </View>
-      <View style={[styles.colDir,{ marginLeft: 20 }]}>
-        <View style={{ flex: 1 }}><Text>Third : {Third}</Text></View>
+      <View style={{ marginLeft: 20 ,flexDirection:"row"}}>
+        {/* <View style={{ flex: 1 }}><Text>Third : {Third}</Text></View>
         <View style={{ flex: 1 }}><Text>Second : {Second}</Text></View>
-        <View style={{ flex: 1 }}><Text>First : {First}</Text></View>
+        <View style={{ flex: 1 }}><Text>First : {First}</Text></View> */}
+        <View style={{ flex: 3 ,paddingLeft:40}}>
+          <Svg width={chartWidth*5/4} height={chartHeight} style={styles.svg} >
+            {/* <Rect width={chartWidth/2} height={chartHeight/2} fill={'#ef7'} /> */}
+            <Circle cx={chartWidth*3/4} cy={chartHeight/2} r={29} fill={'#aaa'}/>
+            <Circle cx={chartWidth*3/4} cy={chartHeight/2} r={19} fill='black'/>
+            {/* Third Line */}
+            <Line x1={leftStart-Third*10} y1={chartHeight/2-10} x2={leftStart-Third*10} y2={chartHeight/2+10} stroke={Third?"red":null} strokeWidth="3" />
+            <Polyline
+              points={`
+              ${leftStart-Third*10},${chartHeight/2+20} 
+              ${leftStart-Third*10*0.98},${chartHeight/2+25}
+              ${leftStart-Third*10*0.90},${chartHeight/2+30} 
+              ${leftStart-Third*10*0.10},${chartHeight/2+30} 
+              ${leftStart-Third*10*0.02},${chartHeight/2+25} 
+              ${leftStart},${chartHeight/2+20}
+              `}
+              fill="none"
+              stroke={Third?"black":null}
+              strokeWidth="3"
+            />
+            <SVGText
+              fill="purple"
+              stroke="purple"
+              fontSize="20"
+              fontWeight="bold"
+              x={leftStart-Third*10*0.50}
+              y={chartHeight/2+50}
+              textAnchor="middle"
+            >
+             {Third?Third:null}
+            </SVGText>
+
+            {/* Second Line */}
+            <Line x1={leftStart-Second*10} y1={chartHeight/2-10} x2={leftStart-Second*10} y2={chartHeight/2+10} stroke={Second?"red":null} strokeWidth="3" />
+            <Polyline
+              points={`
+              ${leftStart-Second*10},${chartHeight/2-20} 
+              ${leftStart-Second*10*0.98},${chartHeight/2-25}
+              ${leftStart-Second*10*0.90},${chartHeight/2-30} 
+              ${leftStart-Second*10*0.10},${chartHeight/2-30} 
+              ${leftStart-Second*10*0.02},${chartHeight/2-25} 
+              ${leftStart},${chartHeight/2-20}
+              `}
+              fill="none"
+              stroke={Second?"black":null}
+              strokeWidth="3"
+            />
+            <SVGText
+              fill="purple"
+              stroke="purple"
+              fontSize="20"
+              fontWeight="bold"
+              x={leftStart-Second*10*0.50}
+              y={chartHeight/2-50}
+              textAnchor="middle"
+            >
+             {Second?Second:null}
+            </SVGText>
+            {/* start Line */}
+            <Line x1={rightStart+(Start+1.1)*10} y1={chartHeight/2-10} x2={rightStart+(Start+1.1)*10} y2={chartHeight/2+10} stroke={Start?"green":null} strokeWidth="3" />
+            <Polyline
+              points={`
+              ${rightStart+(Start+1.1)*10},${chartHeight/2-20} 
+              ${rightStart+(Start+1.1)*10*0.98},${chartHeight/2-25}
+              ${rightStart+(Start+1.1)*10*0.90},${chartHeight/2-30} 
+              ${rightStart+(Start+1.1)*10*0.10},${chartHeight/2-30} 
+              ${rightStart+(Start+1.1)*10*0.02},${chartHeight/2-25} 
+              ${rightStart},${chartHeight/2-20}
+              `}
+              fill="none"
+              stroke={Start?"black":null}
+              strokeWidth="3"
+            />
+            <SVGText
+              fill="purple"
+              stroke="purple"
+              fontSize="20"
+              fontWeight="bold"
+              x={rightStart+(Start+1.1)*10*0.50}
+              y={chartHeight/2-50}
+              textAnchor="middle"
+            >
+             {Start?(Start+1.1):null}
+            </SVGText>
+            {/* First Line */}
+            <Line x1={rightStart+First*10} y1={chartHeight/2-10} x2={rightStart+First*10} y2={chartHeight/2+10} stroke={First?'red':null} strokeWidth="3" />
+            <Polyline
+              points={`
+              ${(rightStart+First*10)},${chartHeight/2+20} 
+              ${(rightStart+First*10*0.98)},${chartHeight/2+25}
+              ${(rightStart+First*10*0.90)},${chartHeight/2+30} 
+              ${(rightStart+First*10*0.10)},${chartHeight/2+30} 
+              ${(rightStart+First*10*0.02)},${chartHeight/2+25} 
+              ${rightStart},${chartHeight/2+20}
+              `}
+              fill="none"
+              stroke={First?"black":null}
+              strokeWidth="3"
+            />
+            <SVGText
+              fill="purple"
+              stroke="purple"
+              fontSize="20"
+              fontWeight="bold"
+              x={rightStart+First*10*0.50}
+              y={chartHeight/2+50}
+              textAnchor="middle"
+            >
+             {First?First:null}
+            </SVGText>
+          </Svg>
+        </View>
         <View style={{ flex: 1 }}></View>
       </View>
     </View>
@@ -160,13 +289,8 @@ export default function App() {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor:"#ef7",
     top:30
-  },
-  rowDir:{
-    flexDirection:"column"
-  },
-  colDir:{
-    flexDirection:"row"
   },
   Width_eyeletNum: {
     backgroundColor: "rgb(185, 117, 27)",
@@ -207,5 +331,10 @@ const styles = StyleSheet.create({
     top: 10,
     height: 60,
     width: 60,
+  },
+  svg:{
+    // borderWidth:3,
+    borderRadius:30,
+    top:-30
   }
 });
