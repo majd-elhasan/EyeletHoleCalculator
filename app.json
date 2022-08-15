@@ -18,10 +18,11 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "CyanCube.EyeletHoleCalculator"
     },
     "android": {
-      "package":"CyanCube.EyeletHoleCalculator",
+      "package": "CyanCube.EyeletHoleCalculator",
       "adaptiveIcon": {
         "foregroundImage": "./assets/Eyelet.png",
         "backgroundColor": "#FFFFFF"
