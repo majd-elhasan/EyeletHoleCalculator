@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity ,Dimensions} from 'react-native';
+import {TouchableHighlight, StyleSheet, Text, View, Image, TouchableOpacity ,Dimensions , Linking} from 'react-native';
 import DPButton from './components/DPButton';
 import Svg, { Circle, Rect,Line ,Polyline,Text as SVGText} from 'react-native-svg';
 
@@ -97,7 +97,13 @@ export default function App() {
     <View style={styles.container}>
       <View style={{  top: 10 ,flexDirection:"row"}}>
         <View style={{ flex: 1, padding: 10 }}>
-          <Image style={[styles.settingIcon]} source={require('./assets/setting-icon.png')} />
+        <TouchableHighlight  onPress={() => {
+              Linking.openURL(
+                'https://wa.me/905355517164'
+              );
+            }}>
+          <Image style={[styles.infoIcon]} source={require('./assets/whatsapp.png')} />
+            </TouchableHighlight>
         </View>
         <View style={{ flex: 3,flexDirection:"column"}}>
           <View style={styles.Width_eyeletNum}>
@@ -198,7 +204,7 @@ export default function App() {
               y={chartHeight/2+50}
               textAnchor="middle"
             >
-             {Third?Third:null}
+             {Third?Third.toFixed(2):null}  {/* Third Line distance value */}
             </SVGText>
 
             {/* Second Line */}
@@ -225,7 +231,7 @@ export default function App() {
               y={chartHeight/2-50}
               textAnchor="middle"
             >
-             {Second?Second:null}
+             {Second?Second.toFixed(2):null}
             </SVGText>
             {/* start Line */}
             <Line x1={rightStart+(Start+1.1)*10} y1={chartHeight/2-10} x2={rightStart+(Start+1.1)*10} y2={chartHeight/2+10} stroke={Start?"green":null} strokeWidth="3" />
@@ -277,7 +283,7 @@ export default function App() {
               y={chartHeight/2+50}
               textAnchor="middle"
             >
-             {First?First:null}
+             {First?First.toFixed(2):null}
             </SVGText>
           </Svg>
         </View>
@@ -327,7 +333,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     paddingTop: 10
   },
-  settingIcon: {
+  infoIcon: {
     top: 10,
     height: 60,
     width: 60,
